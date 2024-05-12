@@ -16,6 +16,24 @@ services:
         volumes:
             - postgres-pro:/var/lib/postgres/data
 
+    migrate:
+        image: migrate/migrate
+        container_name: migrate
+        hostname: migrate
+        volumes:
+            - ./migrations/postgres:/migrations/postgres
+        command:
+            [
+                "-path",
+                "/migrations/postgres",
+                "-database",
+                "postgres://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_EXTERNAL_PORT}/${PG_DB_NAME}?sslmode=${PG_USE_SSL}",
+                "-verbose",
+                "up",
+            ]
+        env_file:
+            - .env
+
     pgadmin:
         image: dpage/pgadmin4:latest
         container_name: postgres-pro-pgadmin
