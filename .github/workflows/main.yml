@@ -20,17 +20,14 @@ jobs:
               with:
                   go-version: 1.22
 
-            - name: Init go mod
-              run: go mod init
-
             - name: Verify dependencies
-              run: go mod verify
+              run: cd ../ && go mod verify
 
             - name: Build
-              run: go build -v ./...
+              run: cd ../ && go build -v ./...
 
             - name: Test
-              run: go test -v ./...
+              run: cd ../ && go test -v ./...
 
     push_to_docker_hub:
         runs-on: ubuntu-latest
