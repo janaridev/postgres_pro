@@ -20,6 +20,9 @@ jobs:
               with:
                   go-version: 1.22
 
+            - name: ls
+              run: ls
+
             - name: Install dependencies
               run: go mod download
 
