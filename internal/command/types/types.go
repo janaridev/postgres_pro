@@ -28,6 +28,7 @@ type CommandService interface {
 	List(ctx context.Context) ([]Command, error)
 	Get(ctx context.Context, id int) (Command, error)
 	Stop(ctx context.Context, id int) error
+	Launch(ctx context.Context, id int) error
 }
 
 type CommandRepo interface {
@@ -58,4 +59,8 @@ type GetCommandResponse struct {
 	Status    string    `json:"status"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type LaunchCommandRequest struct {
+	ID int `json:"id"`
 }

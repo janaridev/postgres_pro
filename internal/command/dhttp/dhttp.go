@@ -114,8 +114,6 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.v.Struct(req); err != nil {
 		response.SendJSONResponse(w, applicationJSON, http.StatusBadRequest, err.(validator.ValidationErrors))
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err.(validator.ValidationErrors))
 		return
 	}
 
@@ -153,6 +151,37 @@ func (h *Handler) Stop(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.service.Stop(r.Context(), id); err != nil {
+		if errors.Is(err, service.ErrCommandNotFound) {
+			response.SendJSONResponse(w, applicationJSON, http.StatusNotFound, response.NewErrorResponse("command not found"))
+			return
+		}
+
+		response.SendJSONResponse(w, applicationJSON, http.StatusInternalServerError, response.NewErrorResponse("something went wrong"))
+		return
+	}
+
+	response.SendJSONResponse(w, applicationJSON, http.StatusOK, nil)
+}
+
+func (h *Handler) Launch(w http.ResponseWriter, r *http.Request) {
+	const op = "dhttp.Lauch"
+
+	logger := h.log.With(slog.String("op", op))
+
+	var req types.LaunchCommandRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		logger.Warn("failed to decode payload", sl.Err(err))
+
+		response.SendJSONResponse(w, applicationJSON, http.StatusBadRequest, response.NewErrorResponse("failed to decode payload"))
+		return
+	}
+
+	if err := h.v.Struct(req); err != nil {
+		response.SendJSONResponse(w, applicationJSON, http.StatusBadRequest, err.(validator.ValidationErrors))
+		return
+	}
+
+	if err := h.service.Launch(r.Context(), req.ID); err != nil {
 		if errors.Is(err, service.ErrCommandNotFound) {
 			response.SendJSONResponse(w, applicationJSON, http.StatusNotFound, response.NewErrorResponse("command not found"))
 			return

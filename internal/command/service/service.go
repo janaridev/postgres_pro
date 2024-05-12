@@ -106,6 +106,39 @@ func (c *CommandService) Stop(ctx context.Context, id int) error {
 	return load.Exec.Process.Kill()
 }
 
+func (c *CommandService) Launch(ctx context.Context, id int) error {
+	const op = "commandService.Launch"
+
+	var cmd types.Command
+
+	load, ok := c.workers.Load(id)
+	if ok {
+		cmd = load.Command
+	} else {
+		res, err := c.repo.Get(ctx, id)
+		if err != nil {
+			if errors.Is(err, repo.ErrCommandNotFound) {
+				c.log.Warn(err.Error())
+
+				return ErrCommandNotFound
+			}
+
+			c.log.Warn(err.Error())
+			return err
+		}
+
+		cmd = res
+	}
+
+	c.pool.Go(func() {
+		if err := c.exec(cmd); err != nil {
+			c.log.ErrorContext(ctx, fmt.Sprintf("%s command exec", op), sl.Err(err))
+		}
+	})
+
+	return nil
+}
+
 func (c *CommandService) exec(cmd types.Command) (err error) {
 	const op = "commandService.exec"
 

@@ -65,9 +65,13 @@ func run() error {
 		fmt.Fprintf(w, "OK\n")
 	})
 
+	// QUERIES
 	mux.HandleFunc("GET /api/command", commandDHTTP.List)
 	mux.HandleFunc("GET /api/command/{id}", commandDHTTP.Get)
+
+	// COMMANDS
 	mux.HandleFunc("POST /api/command", commandDHTTP.Create)
+	mux.HandleFunc("POST /api/command/launch", commandDHTTP.Launch)
 	mux.HandleFunc("DELETE /api/command/{id}", commandDHTTP.Stop)
 
 	go func() {
