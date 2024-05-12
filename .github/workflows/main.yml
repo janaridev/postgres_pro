@@ -20,8 +20,8 @@ jobs:
               with:
                   go-version: 1.22
 
-            - name: Display Go version
-              run: go version
+            - name: ls
+              run: ls -l
 
             - name: Verify dependencies
               run: go mod verify
