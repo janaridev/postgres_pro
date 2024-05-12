@@ -20,3 +20,6 @@ test:
 
 docker_build:
 	docker build -f ./docker/Dockerfile -t csharpjanari/postgres-pro .
+
+compose_up:
+	docker compose pull && docker compose up -d
