@@ -20,8 +20,10 @@ jobs:
               with:
                   go-version: 1.22
 
-            - name: ls
-              run: ls -l
+            - name: Debugging ls
+              run: |
+                  echo "Current Directory: $(pwd)"
+                  echo "Contents: $(ls -l)"
 
             - name: Verify dependencies
               run: go mod verify
