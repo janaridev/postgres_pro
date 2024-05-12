@@ -13,7 +13,7 @@ type Command struct {
 	Name      string
 	ErrorMsg  sql.NullString
 	Logs      sql.NullString
-	Status    string
+	Status    sql.NullString
 	CreatedAt time.Time
 	UpdatedAt sql.NullTime
 }

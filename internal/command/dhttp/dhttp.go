@@ -50,7 +50,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 			Raw:       cmd.Raw,
 			Logs:      cmd.Logs.String,
 			ErrorMsg:  cmd.ErrorMsg.String,
-			Status:    cmd.Status,
+			Status:    cmd.Status.String,
 			CreatedAt: cmd.CreatedAt,
 			UpdatedAt: cmd.UpdatedAt.Time,
 		})
@@ -77,7 +77,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	cmd, err := h.service.Get(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, service.ErrCommandNotFound) {
-			response.SendJSONResponse(w, applicationJSON, http.StatusBadRequest, response.NewErrorResponse("command not found"))
+			response.SendJSONResponse(w, applicationJSON, http.StatusNotFound, response.NewErrorResponse("command not found"))
 			return
 		}
 
@@ -91,7 +91,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		Raw:       cmd.Raw,
 		Logs:      cmd.Logs.String,
 		ErrorMsg:  cmd.ErrorMsg.String,
-		Status:    cmd.Status,
+		Status:    cmd.Status.String,
 		CreatedAt: cmd.CreatedAt,
 		UpdatedAt: cmd.UpdatedAt.Time,
 	}
@@ -154,7 +154,7 @@ func (h *Handler) Stop(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.service.Stop(r.Context(), id); err != nil {
 		if errors.Is(err, service.ErrCommandNotFound) {
-			response.SendJSONResponse(w, applicationJSON, http.StatusBadRequest, response.NewErrorResponse("command not found"))
+			response.SendJSONResponse(w, applicationJSON, http.StatusNotFound, response.NewErrorResponse("command not found"))
 			return
 		}
 

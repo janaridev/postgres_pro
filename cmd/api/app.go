@@ -37,8 +37,6 @@ func run() error {
 	)
 	defer cancel()
 
-	_ = ctx
-
 	logger.Info("init db")
 	conn := db.GenerateConnString(cfg.DB.User, cfg.DB.Password, cfg.DB.Name,
 		cfg.DB.Host, cfg.DB.Port, cfg.DB.UseSSL)
