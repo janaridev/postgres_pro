@@ -15,6 +15,11 @@ services:
             - .env
         volumes:
             - postgres-pro:/var/lib/postgres/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
 
     migrate:
         image: migrate/migrate
@@ -33,6 +38,8 @@ services:
             ]
         env_file:
             - .env
+        depends_on:
+            - postgres
 
     pgadmin:
         image: dpage/pgadmin4:latest
@@ -53,6 +60,8 @@ services:
             - 3000:3000
         env_file:
             - .env
+        depends_on:
+            - postgres
 
     nginx:
         image: nginx
