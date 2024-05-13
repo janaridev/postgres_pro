@@ -58,6 +58,8 @@ func (c *CommandService) Get(ctx context.Context, id int) (types.Command, error)
 			return types.Command{}, fmt.Errorf("%s: %w", op, ErrCommandNotFound)
 		}
 
+		c.log.Warn(err.Error())
+
 		return types.Command{}, fmt.Errorf("%s: %w", op, err)
 	}
 

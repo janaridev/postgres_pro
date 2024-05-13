@@ -23,3 +23,6 @@ docker_build:
 
 compose_up:
 	docker compose pull && docker compose up -d
+
+start:
+	go run cmd/api/*.go
